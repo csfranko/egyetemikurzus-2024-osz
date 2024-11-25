@@ -8,7 +8,7 @@ namespace StudentRegistrySystem.Model
 {
     public class SubjectGrades
     {
-        public string SubjectGrade { get; set; }
+        public string SubjectName { get; set; }
         public List<int> Grades { get; set; }
 
         public SubjectGrades() { }

@@ -11,8 +11,11 @@ namespace StudentRegistrySystem.Model
         public int Id { get; set; }
         public string Class { get; set; }
         public string Name { get; set; }
-        public List<SubjectGrades> Grades { get; set; }
-        public Student() { }
+        public List<SubjectGrades> Subjects { get; set; }
+        public Student(string _class, string _name) 
+        {
+
+        }
 
     }
 }
