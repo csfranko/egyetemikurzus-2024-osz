@@ -8,10 +8,12 @@ using StudentRegistrySystem.Model;
 
 namespace StudentRegistrySystem.DAO
 {
-    internal interface IStundentDAO
+    internal interface IStudentDAO
     {
         public int StudentSpecificAverageSubjectGrade(int id, string subject);
         public List<Student> GetStudents();
+        public void DisplayStudents();
+        public void DisplayHelps();
         public bool AddStudent(Student student);
         public bool RemoveStudent(int id);
         public bool AddGrade(int id, int grade, string subjectName);

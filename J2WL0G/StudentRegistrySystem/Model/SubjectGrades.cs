@@ -6,11 +6,17 @@ using System.Threading.Tasks;
 
 namespace StudentRegistrySystem.Model
 {
-    public class SubjectGrades
+    public record SubjectGrades
     {
         public string SubjectName { get; set; }
         public List<int> Grades { get; set; }
 
-        public SubjectGrades() { }
+        public SubjectGrades(string _subjectName) 
+        {
+            SubjectName = _subjectName;
+            Grades = new List<int>();
+        }
+        public SubjectGrades() {
+        }
     }
 }
