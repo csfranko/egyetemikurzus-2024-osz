@@ -40,16 +40,26 @@ namespace StudentRegistrySystem.Controller
             studentDAO.DisplayStudents();
         }
 
-        public void DisplayBestAverageStudent(string subject)
+        public void BestAverageStudentsGradeInSubject(string subject)
         {
 
-            studentDAO.BestAverageStudentGradeInSubject(subject);
+            studentDAO.BestAverageStudentsGradeInSubject(subject);
 
+        }
+
+        public void StudentPerformanceInSubject(int id, string subjectName) 
+        { 
+            studentDAO.StudentPerformanceInSubject(id, subjectName);
         }
 
         public void DisplayHelps()
         {
             studentDAO.DisplayHelps();
+        }
+
+        public bool RemoveStudent(int id) 
+        { 
+            return studentDAO.RemoveStudent(id);
         }
 
         public void SaveData(string filePath)

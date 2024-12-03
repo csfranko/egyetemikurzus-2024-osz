@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,14 +13,16 @@ namespace StudentRegistrySystem.Model
         public string Class { get; set; }
         public string Name { get; set; }
         public List<SubjectGrades> Subjects { get; set; }
-        public Student(int id,string _name, string _class) 
+        public Student(int Id,string Name, string Class) 
         {
-            Id = id;
-            Name = _name;
-            Class = _class;
-            Subjects = new List<SubjectGrades>();
+            this.Id = BitConverter.ToInt32(Guid.NewGuid().ToByteArray(), 0) & int.MaxValue;
+            this.Name = Name;
+            this.Class = Class;
+            this.Subjects = new List<SubjectGrades>();
         }
-        public Student() { }
+        public Student() {
+            this.Id = BitConverter.ToInt32(Guid.NewGuid().ToByteArray(), 0) & int.MaxValue;
+        }
 
     }
 }

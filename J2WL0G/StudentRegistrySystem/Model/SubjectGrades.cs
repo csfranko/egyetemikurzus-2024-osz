@@ -17,6 +17,7 @@ namespace StudentRegistrySystem.Model
             Grades = new List<int>();
         }
         public SubjectGrades() {
+            Grades = new List<int>();
         }
     }
 }

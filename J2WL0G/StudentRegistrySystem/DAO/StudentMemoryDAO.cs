@@ -11,11 +11,12 @@ namespace StudentRegistrySystem.DAO
 {
     internal class StudentMemoryDAO : IStudentDAO
     {
-        List<Student> _students = new List<Student>();
-        List<SubjectGrades> _subjects = new List<SubjectGrades>();
+        List<Student> _students;
+        List<SubjectGrades> _subjects;
         public StudentMemoryDAO()
-        { 
-        
+        {
+            List<Student> _students = new List<Student>();
+            List<SubjectGrades> _subjects = new List<SubjectGrades>();
         }
 
         public bool AddGrade(int id, int grade, string subjectName)
@@ -49,13 +50,10 @@ namespace StudentRegistrySystem.DAO
                 Console.WriteLine("Hiba: Az adatstruktúra üres vagy érvénytelen.");
                 return rtv;
             }
-
+            Console.WriteLine("Sikeresen hozzá adtál egy diákot a rendszerhez!");
             _students.Add(student);
             rtv = true;
             return rtv;
-
-
-
         }
 
         public bool AddSubject(int id, string subjectName)
@@ -74,17 +72,43 @@ namespace StudentRegistrySystem.DAO
                 return false;
             }
             var subject = new SubjectGrades { 
-                SubjectName = subjectName,
-                Grades = new List<int>()
+                SubjectName = subjectName
             };
             student.Subjects.Add(subject);
             return true;
         }
 
-        public int BestAverageStudentGradeInSubject(string subject)
+        public void BestAverageStudentsGradeInSubject(string subject)
         {
-            throw new NotImplementedException();
+
+            var studentAverages = _students
+                .Select(s => new
+                {
+                    Student = s,
+                    Average = s.Subjects
+                        .Where(sub => sub.SubjectName == subject && sub.Grades.Any())
+                        .SelectMany(sub => sub.Grades)
+                        .DefaultIfEmpty(0) 
+                        .Average()
+                })
+                .Where(sa => sa.Average > 0) 
+                .OrderByDescending(sa => sa.Average)
+                .Take(5)
+                .ToList();
+
+            if (!studentAverages.Any())
+            {
+                Console.WriteLine($"Nincs adat az alábbi tárgyból: {subject}");
+                return;
+            }
+
+            Console.WriteLine($"Az első 5 legjobb átlag a(z) {subject} tárgyból:");
+            foreach (var entry in studentAverages)
+            {
+                Console.WriteLine($"ID: {entry.Student.Id}, Név: {entry.Student.Name}, Osztály: {entry.Student.Class}, Átlag: {entry.Average:F2}");
+            }
         }
+
 
         public List<Student> GetStudents()
         {
@@ -94,7 +118,7 @@ namespace StudentRegistrySystem.DAO
         {          
             if (_students.Count == 0)
             {
-                Console.WriteLine("Nincs diák az adatbázisban.");
+                Console.WriteLine("Hiba: Nincs diák az adatbázisban.");
                 return;
             }
 
@@ -148,16 +172,8 @@ namespace StudentRegistrySystem.DAO
 
         public bool RemoveStudent(int id)
         {
-            bool rtv = false;
-            foreach (Student student in _students) 
-            {
-                if (student.Id == id)
-                {
-                    _students.Remove(student);
-                    rtv = true;
-                }
-            }
-            return rtv;
+            int removedCount = _students.RemoveAll(s => s.Id == id); 
+            return removedCount > 0;
         }
 
         public void SaveStudents(string filePath, IEnumerable<Student> students)
@@ -186,27 +202,55 @@ namespace StudentRegistrySystem.DAO
             }
         }
 
-        public int StudentSpecificAverageSubjectGrade(int id, string subject)
+        public void StudentPerformanceInSubject(int id, string subject)
         {
-            throw new NotImplementedException();
+            var student = _students.FirstOrDefault(s => s.Id == id);
+
+            if (student == null)
+            {
+                Console.WriteLine($"Hiba: A diák az adott ID-val ({id}) nem található.");
+                return;
+            }
+
+            var subjectGrades = student.Subjects
+                .Where(s => s.SubjectName == subject) 
+                .SelectMany(s => s.Grades) 
+                .ToList();
+
+            if (!subjectGrades.Any())
+            {
+                Console.WriteLine($"Hiba: A diák ({student.Name}) nem rendelkezik jegyekkel a(z) {subject} tárgyból.");
+                return;
+            }
+
+            double average = subjectGrades.Average(); 
+            int bestGrade = subjectGrades.Max(); 
+
+            Console.WriteLine($"Diák adatai - ID: {student.Id}, Név: {student.Name}, Osztály: {student.Class}");
+            Console.WriteLine($"Tantárgy: {subject}, Átlag: {average:F2}, Legjobb jegy: {bestGrade}");
         }
+
 
         public void DisplayHelps()
         {
-            Console.WriteLine(@"Üdvözöllek Geptun-ban!
-                                Az alábbi parancsok elérhetők: 
-                                    (A '[]' között található elnevezések a megadható paraméterek)
-                                    - AddStudent [Tanuló neve] [Tanuló osztálya]: Az alábbi paranccsal hozzá adhatsz egy tanulót az adatbázishoz!
-                                    - AddSubject [Tanuló azonosítója] [Tantárgy neve]: Az alábbi paranccsal hozzá adhatsz egy tantárgyat a tanuló tantárgyai közé, 
-                                        amit még nem tanul, ha az adatbázisban megtalálható a tanuló!
-                                    - AddGrade [Tanuló azonosítója] [Jegy] [Tantárgy neve]: Az alábbi paranccsal hozzá adhatsz egy jegyet a tanuló tantárgyához!
-                                    - BestAverageGrade [Tanuló azonosítója] [Tantárgy neve]:
-                                    - BestAverageGrades [Tantárgy neve]:
-                                    - DisplayStudents: Kilistázza az adatbázisban lévő diákokat!
-                                    - Save: A program futása közben létrehozott vagy módosított adatokat lehet menteni!
-                                    - Help: A parancsok listáját és azok funkcióját iratja ki a képernyőre!");
+            Console.WriteLine(
+@"Üdvözöllek Geptun-ban!
+Az alábbi parancsok elérhetők:
+FONTOS: A változtatások csak a 'Save' parancs beírása után mentődnek el!
+(A '[]' között található elnevezések a megadható paraméterek)
+- AddStudent [Tanuló neve] [Tanuló osztálya]: Az alábbi paranccsal hozzá adhatsz egy tanulót az adatbázishoz!
+- AddSubject [Tanuló azonosítója] [Tantárgy neve]: Az alábbi paranccsal hozzá adhatsz egy tantárgyat a tanuló tantárgyai közé, 
+    amit még nem tanul, ha az adatbázisban megtalálható a tanuló!
+- AddGrade [Tanuló azonosítója] [Jegy] [Tantárgy neve]: Az alábbi paranccsal hozzá adhatsz egy jegyet a tanuló tantárgyához!
+- BestAndAverageGrade [Tanuló azonosítója] [Tantárgy neve]: Kiírja a választott tanuló legjobb jegyét és átlagát az adott tantárgyból!
+- BestAverageGrades [Tantárgy neve]: Kiírja az adott tantárgyból az első 5 legjobb tanuló átlagát!
+- DisplayStudents: Kilistázza az adatbázisban lévő diákokat!
+- RemoveStudent [Tanuló azonosítója]: Törli a diákot az adatbázisból!
+- Save: A program futása közben létrehozott vagy módosított adatokat lehet menteni!
+- Stop: A program leáll!
+- Help: A parancsok listáját és azok funkcióját iratja ki a képernyőre!");
 
-
+            //hihi
             Console.Beep();
         }
     }

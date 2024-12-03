@@ -1,1 +1,74 @@
-[]
+[
+  {
+    "Id": 1351865077,
+    "Class": "Elek",
+    "Name": "Teszt",
+    "Subjects": []
+  },
+  {
+    "Id": 986512886,
+    "Class": "10/B",
+    "Name": "Teszt",
+    "Subjects": [
+      {
+        "SubjectName": "Biol\u00F3gia",
+        "Grades": [
+          5
+        ]
+      },
+      {
+        "SubjectName": "Matek",
+        "Grades": [
+          5,
+          2
+        ]
+      },
+      {
+        "SubjectName": "Testnevel\u00E9s",
+        "Grades": [
+          5,
+          1
+        ]
+      }
+    ]
+  },
+  {
+    "Id": -918749938,
+    "Class": "11/B",
+    "Name": "Lili",
+    "Subjects": [
+      {
+        "SubjectName": "Matek",
+        "Grades": [
+          5,
+          3,
+          1
+        ]
+      },
+      {
+        "SubjectName": "Testnevel\u00E9s",
+        "Grades": [
+          2
+        ]
+      },
+      {
+        "SubjectName": "Biol\u00F3gia",
+        "Grades": [
+          5,
+          4
+        ]
+      }
+    ]
+  },
+  {
+    "Id": 1407285806,
+    "Class": "12/B",
+    "Name": "Frank\u00F3 Csaba Andr\u00E1s",
+    "Subjects": [
+      {
+        "SubjectName": "Matek",
+        "Grades": []
+      }
+    ]
+  }
+]
